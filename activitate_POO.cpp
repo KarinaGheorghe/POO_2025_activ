@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//TEMA1
 class Pacient {
 public:
 	string nume;
@@ -156,6 +157,106 @@ public:
 	}
 };
 int Echipament::nrEchipamente = 0;
+//TEMA2
+class Pacient2 {
+private:
+	string nume;
+	int varsta;
+	double* greutate;
+	bool inRecuperare;
+
+public:
+	Pacient2() : nume("Anonim"), varsta(30), greutate(new double(70)), inRecuperare(true) {}
+	Pacient2(string n, int v) : nume(n), varsta(v), greutate(new double(80)), inRecuperare(false) {}
+	Pacient2(string n, int v, double g, bool r)
+		: nume(n), varsta(v), greutate(new double(g)), inRecuperare(r) {
+	}
+
+	Pacient2(const Pacient2& p) {
+		nume = p.nume;
+		varsta = p.varsta;
+		greutate = new double(*p.greutate);
+		inRecuperare = p.inRecuperare;
+	}
+
+	string getNume() const { return nume; }
+	double getGreutate() const { return *greutate; }
+	void setGreutate(double g) { *greutate = g; }
+
+	friend double IndiceRecuperare(const Pacient2& p);
+
+	void Afisare() const {
+		cout << "Pacient2: " << nume << ", " << varsta
+			<< " ani, " << *greutate << " kg\n";
+	}
+
+	~Pacient2() { delete greutate; }
+};
+
+double IndiceRecuperare(const Pacient2& p) {
+	return p.varsta / *p.greutate;
+}
+
+class Exercitiu2 {
+private:
+	string denumire;
+	int repetari;
+	double* durata;
+
+public:
+	Exercitiu2() : denumire("Genuflexiuni"), repetari(10), durata(new double(2)) {}
+	Exercitiu2(string d, int r) : denumire(d), repetari(r), durata(new double(1.5)) {}
+
+	Exercitiu2(const Exercitiu2& e) {
+		denumire = e.denumire;
+		repetari = e.repetari;
+		durata = new double(*e.durata);
+	}
+
+	double getDurata() const { return *durata; }
+
+	friend double DifDurata(const Exercitiu2&, const Exercitiu2&);
+
+	void Afisare() const {
+		cout << "Ex2: " << denumire << ", rep: " << repetari
+			<< ", durata: " << *durata << endl;
+	}
+
+	~Exercitiu2() { delete durata; }
+};
+
+double DifDurata(const Exercitiu2& e1, const Exercitiu2& e2) {
+	return *e1.durata - *e2.durata;
+}
+
+class Echipament2 {
+private:
+	string tip;
+	double* greutate;
+
+public:
+	Echipament2() : tip("Bicicleta"), greutate(new double(25)) {}
+	Echipament2(string t, double g) : tip(t), greutate(new double(g)) {}
+
+	Echipament2(const Echipament2& e) {
+		tip = e.tip;
+		greutate = new double(*e.greutate);
+	}
+
+	double getGreutate() const { return *greutate; }
+
+	friend double Medie3(const Echipament2&, const Echipament2&, const Echipament2&);
+
+	void Afisare() const {
+		cout << "Eq2: " << tip << " (" << *greutate << " kg)\n";
+	}
+
+	~Echipament2() { delete greutate; }
+};
+
+double Medie3(const Echipament2& a, const Echipament2& b, const Echipament2& c) {
+	return (*a.greutate + *b.greutate + *c.greutate) / 3;
+}
 
 int main() {
 	cout << "=== Domeniu: Geokinetica (Gheorghe Karina) ===\n\n";
@@ -179,6 +280,21 @@ int main() {
 	eq1.Afisare(); eq2.Afisare(); eq3.Afisare();
 	cout << "Greutate medie echipamente: "
 		<< Echipament::MedieGreutate(eq1, eq2, eq3) << " kg\n";
+
+	Pacient2 pp1;
+	Pacient2 pp2("Karina", 22);
+	Pacient2 pp3(pp2);
+	pp1.Afisare();
+	cout << "Indice recuperare: " << IndiceRecuperare(pp1) << endl;
+
+	Exercitiu2 ex21;
+	Exercitiu2 ex22("Flotari", 20);
+	cout << "Dif durata = " << DifDurata(ex21, ex22) << endl;
+
+	Echipament2 eq21;
+	Echipament2 eq22("Minge", 3);
+	Echipament2 eq23(eq22);
+	cout << "Medie = " << Medie3(eq21, eq22, eq23) << endl;
 
 		return 0;
 }
